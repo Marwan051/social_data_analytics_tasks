@@ -44,10 +44,14 @@ def run_ml_pipeline_majority():
             X_glove = pd.read_csv(glove_path)
             
             # Ensure the text rep files only contain numeric features 
-            if TARGET_COLUMN in X_bow.columns:
-                X_bow = X_bow.drop(columns=[TARGET_COLUMN])
-            if TARGET_COLUMN in X_glove.columns:
-                X_glove = X_glove.drop(columns=[TARGET_COLUMN])
+            # AND drop the original scores to prevent Data Leakage!
+            leakage_columns = [TARGET_COLUMN, "rating", "score_gemini", "score_groq", "final_score"]
+            
+            for col in leakage_columns:
+                if col in X_bow.columns:
+                    X_bow = X_bow.drop(columns=[col])
+                if col in X_glove.columns:
+                    X_glove = X_glove.drop(columns=[col])
                 
             X_bow = X_bow.select_dtypes(include=['number'])
             X_glove = X_glove.select_dtypes(include=['number'])
