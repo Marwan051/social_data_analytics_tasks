@@ -9,12 +9,11 @@ class BingSentiment:
         with open(path, "r") as f:
             return set(word.strip() for word in f.readlines())
 
-    def predict(self, tokens):
+    def raw_score(self, tokens):
         score = 0
         negate = False
 
         for word in tokens:
-
             if word in self.negations:
                 negate = True
                 continue
@@ -27,6 +26,10 @@ class BingSentiment:
                 score += 1 if negate else -1
                 negate = False
 
+        return score
+
+    def predict(self, tokens):
+        score = self.raw_score(tokens)
         if score > 0:
             return "positive"
         elif score < 0:

@@ -16,9 +16,11 @@ class SWNSentiment:
         else:
             return 0
 
-    def predict(self, tokens):
-        score = sum(self.get_score(word) for word in tokens)
+    def raw_score(self, tokens):
+        return sum(self.get_score(word) for word in tokens)
 
+    def predict(self, tokens):
+        score = self.raw_score(tokens)
         if score > 0:
             return "positive"
         elif score < 0:
